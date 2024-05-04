@@ -9,15 +9,15 @@
 #define STONE 3
 
 int coord(int x, int y);
-void swapPixels(int x1,int y1,int x2,int y2);
+void swapPixels(int x1, int y1, int x2, int y2);
 
 int SCREEN_WIDTH = 700;
 int SCREEN_HEIGHT = 850;
-int SCALE_FACTOR = 2;
+int SCALE_FACTOR = 4;
 int ROW_LENGTH = SCREEN_WIDTH / SCALE_FACTOR;
 int CLM_LENGTH = SCREEN_HEIGHT / SCALE_FACTOR;
 
-std::vector<int> sandBox(ROW_LENGTH * CLM_LENGTH, AIR);
+std::vector<int> sandBox(ROW_LENGTH *CLM_LENGTH, AIR);
 
 float circleRadius = SCALE_FACTOR / 2;
 int element = 1;
@@ -79,39 +79,39 @@ int main(void)
             element = WATER;
         else if (IsKeyPressed(KEY_THREE))
             element = STONE;
-        
-        if(IsKeyDown(KEY_Q))
+
+        if (IsKeyDown(KEY_Q))
         {
             for (int y = CLM_LENGTH - 1; y > 0; y--)
-        {
-            for (int x = ROW_LENGTH - 1; x > 0; x--)
             {
-                if(sandBox[coord(x,y)]==SAND)
-                    sandBox[coord(x,y)]=AIR;
+                for (int x = ROW_LENGTH - 1; x > 0; x--)
+                {
+                    if (sandBox[coord(x, y)] == SAND)
+                        sandBox[coord(x, y)] = AIR;
+                }
             }
         }
-        }
-        else if(IsKeyDown(KEY_W))
+        else if (IsKeyDown(KEY_W))
         {
             for (int y = CLM_LENGTH - 1; y > 0; y--)
-        {
-            for (int x = ROW_LENGTH - 1; x > 0; x--)
             {
-                if(sandBox[coord(x,y)]==WATER)
-                    sandBox[coord(x,y)]=AIR;
+                for (int x = ROW_LENGTH - 1; x > 0; x--)
+                {
+                    if (sandBox[coord(x, y)] == WATER)
+                        sandBox[coord(x, y)] = AIR;
+                }
             }
         }
-        }
-        else if(IsKeyDown(KEY_E))
+        else if (IsKeyDown(KEY_E))
         {
             for (int y = CLM_LENGTH - 1; y > 0; y--)
-        {
-            for (int x = ROW_LENGTH - 1; x > 0; x--)
             {
-                if(sandBox[coord(x,y)]==STONE)
-                    sandBox[coord(x,y)]=AIR;
+                for (int x = ROW_LENGTH - 1; x > 0; x--)
+                {
+                    if (sandBox[coord(x, y)] == STONE)
+                        sandBox[coord(x, y)] = AIR;
+                }
             }
-        }
         }
 
         for (int y = CLM_LENGTH - 1; y > 0; y--)
@@ -124,30 +124,43 @@ int main(void)
                     int rand = GetRandomValue(0, 1) * 2 - 1;
                     int rand2 = GetRandomValue(0, 1);
                     if (sandBox[coord(x, y + 1)] == AIR && y < CLM_LENGTH - 1)
-                        swapPixels(x,y+1,x,y);
+                        swapPixels(x, y + 1, x, y);
                     else if (sandBox[coord(x + rand, y + 1)] == AIR && x + rand < ROW_LENGTH - 1 && x + rand > 0)
-                        swapPixels(x+rand,y+1,x,y);
+                        swapPixels(x + rand, y + 1, x, y);
                     else if (sandBox[coord(x - rand, y + 1)] == AIR && x - rand < ROW_LENGTH - 1 && x - rand > 0)
-                        swapPixels(x-rand,y+1,x,y);
-                    else if(sandBox[coord(x, y + 1)] == WATER && y < CLM_LENGTH - 1)
-                        swapPixels(x+rand*rand2,y+rand2,x,y);
-                    else if(sandBox[coord(x + rand, y + 1)] == WATER && x + rand < ROW_LENGTH - 1 && x + rand > 0)
-                        swapPixels(x+rand*rand2,y+rand2,x,y);
-                    else if(sandBox[coord(x - rand, y + 1)] == WATER && x - rand < ROW_LENGTH - 1 && x - rand > 0)
-                        swapPixels(x-rand*rand2,y+rand2,x,y);
+                        swapPixels(x - rand, y + 1, x, y);
+                    else if (sandBox[coord(x, y + 1)] == WATER && y < CLM_LENGTH - 1)
+                        swapPixels(x + rand * rand2, y + rand2, x, y);
+                    else if (sandBox[coord(x + rand, y + 1)] == WATER && x + rand < ROW_LENGTH - 1 && x + rand > 0)
+                        swapPixels(x + rand * rand2, y + rand2, x, y);
+                    else if (sandBox[coord(x - rand, y + 1)] == WATER && x - rand < ROW_LENGTH - 1 && x - rand > 0)
+                        swapPixels(x - rand * rand2, y + rand2, x, y);
                 }
                 // water sim
                 else if (sandBox[coord(x, y)] == WATER)
                 {
                     int rand = GetRandomValue(0, 1) * 2 - 1;
-                    if (sandBox[coord(x, y + 1)] == AIR && y < CLM_LENGTH - 1)
-                        swapPixels(x,y+1,x,y);
-                    else if (sandBox[coord(x + rand, y + 1)] == AIR && x + rand < ROW_LENGTH - 1 && x + rand > 0)
-                        swapPixels(x + rand, y + 1,x,y);
-                    else if (sandBox[coord(x - rand, y + 1)] == AIR && x - rand < ROW_LENGTH - 1 && x - rand > 0)
-                        swapPixels(x - rand, y + 1,x,y);
-                    else if (sandBox[coord(x + 1, y)] == AIR && x - rand < ROW_LENGTH - 3 && x - rand > 0)
-                        swapPixels(x + 1, y,x,y);
+                    for (int i = 0; i < ROW_LENGTH / 8; i++)
+                    {
+                        if(sandBox[coord(x + rand * i, y + 1)] == SAND)
+                            break;
+                        else if(sandBox[coord(x - rand * i, y + 1)] == SAND)
+                            break;
+                        else if(sandBox[coord(x + rand * i, y + 1)] == STONE)
+                            break;
+                        else if(sandBox[coord(x - rand * i, y + 1)] == STONE)
+                            break;
+                         if (sandBox[coord(x + rand * i, y + 1)] == AIR && x + rand*i < ROW_LENGTH - 1 && x + rand*i > 0 && y < CLM_LENGTH - 1)
+                        {
+                            swapPixels(x + rand * i, y + 1, x, y);
+                            break;
+                        }
+                        else if (sandBox[coord(x - rand * i, y + 1)] == AIR && x + rand*i < ROW_LENGTH - 1 && x + rand*i > 0 && y < CLM_LENGTH - 1)
+                        {    
+                            swapPixels(x - rand * i, y + 1, x, y);
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -186,8 +199,9 @@ int coord(int x, int y)
     return x + y * ROW_LENGTH;
 }
 
-void swapPixels(int x1,int y1,int x2,int y2){
-    int temp = sandBox[coord(x1,y1)];
-    sandBox[coord(x1,y1)] = sandBox[coord(x2,y2)];
-    sandBox[coord(x2,y2)] = temp;
+void swapPixels(int x1, int y1, int x2, int y2)
+{
+    int temp = sandBox[coord(x1, y1)];
+    sandBox[coord(x1, y1)] = sandBox[coord(x2, y2)];
+    sandBox[coord(x2, y2)] = temp;
 }
