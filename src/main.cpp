@@ -13,7 +13,7 @@ void swapPixels(int x1, int y1, int x2, int y2);
 
 int SCREEN_WIDTH = 700;
 int SCREEN_HEIGHT = 850;
-int SCALE_FACTOR = 4;
+int SCALE_FACTOR = 2;
 int ROW_LENGTH = SCREEN_WIDTH / SCALE_FACTOR;
 int CLM_LENGTH = SCREEN_HEIGHT / SCALE_FACTOR;
 
@@ -129,11 +129,11 @@ int main(void)
                         swapPixels(x + rand, y + 1, x, y);
                     else if (sandBox[coord(x - rand, y + 1)] == AIR && x - rand < ROW_LENGTH - 1 && x - rand > 0)
                         swapPixels(x - rand, y + 1, x, y);
-                    else if (sandBox[coord(x, y + 1)] == WATER && y < CLM_LENGTH - 1)
+                    else if (sandBox[coord(x + rand * rand2, y + 1)] == WATER && y < CLM_LENGTH - 1)
                         swapPixels(x + rand * rand2, y + rand2, x, y);
-                    else if (sandBox[coord(x + rand, y + 1)] == WATER && x + rand < ROW_LENGTH - 1 && x + rand > 0)
+                    else if (sandBox[coord(x + rand * rand2, y + 1)] == WATER && x + rand < ROW_LENGTH - 1 && x + rand > 0)
                         swapPixels(x + rand * rand2, y + rand2, x, y);
-                    else if (sandBox[coord(x - rand, y + 1)] == WATER && x - rand < ROW_LENGTH - 1 && x - rand > 0)
+                    else if (sandBox[coord(x - rand * rand2, y + 1)] == WATER && x - rand < ROW_LENGTH - 1 && x - rand > 0)
                         swapPixels(x - rand * rand2, y + rand2, x, y);
                 }
                 // water sim
@@ -142,21 +142,17 @@ int main(void)
                     int rand = GetRandomValue(0, 1) * 2 - 1;
                     for (int i = 0; i < ROW_LENGTH / 8; i++)
                     {
-                        if(sandBox[coord(x + rand * i, y + 1)] == SAND)
+                        if (sandBox[coord(x + rand * i, y + 1)] == SAND || sandBox[coord(x - rand * i, y + 1)] == SAND)
                             break;
-                        else if(sandBox[coord(x - rand * i, y + 1)] == SAND)
+                        else if (sandBox[coord(x + rand * i, y + 1)] == STONE || sandBox[coord(x - rand * i, y + 1)] == STONE)
                             break;
-                        else if(sandBox[coord(x + rand * i, y + 1)] == STONE)
-                            break;
-                        else if(sandBox[coord(x - rand * i, y + 1)] == STONE)
-                            break;
-                         if (sandBox[coord(x + rand * i, y + 1)] == AIR && x + rand*i < ROW_LENGTH - 1 && x + rand*i > 0 && y < CLM_LENGTH - 1)
+                        if (sandBox[coord(x + rand * i, y + 1)] == AIR && x + rand * i < ROW_LENGTH - 1 && x + rand * i > 0 && y < CLM_LENGTH - 1)
                         {
                             swapPixels(x + rand * i, y + 1, x, y);
                             break;
                         }
-                        else if (sandBox[coord(x - rand * i, y + 1)] == AIR && x + rand*i < ROW_LENGTH - 1 && x + rand*i > 0 && y < CLM_LENGTH - 1)
-                        {    
+                        else if (sandBox[coord(x - rand * i, y + 1)] == AIR && x + rand * i < ROW_LENGTH - 1 && x + rand * i > 0 && y < CLM_LENGTH - 1)
+                        {
                             swapPixels(x - rand * i, y + 1, x, y);
                             break;
                         }
@@ -168,13 +164,6 @@ int main(void)
         //----------------------------------------------------------------------------------
         BeginDrawing();
         ClearBackground(BLACK);
-        DrawFPS(1, 1);
-        if (element == SAND)
-            DrawText("Sand", 340, 10, 24, GetColor(0xFDDE55FF));
-        else if (element == WATER)
-            DrawText("Water", 340, 10, 24, GetColor(0x0E46A3FF));
-        else if (element == STONE)
-            DrawText("Stone", 340, 10, 24, GetColor(0x9290C3FF));
         for (int y = 0; y < CLM_LENGTH; y++)
         {
             for (int x = 0; x < ROW_LENGTH; x++)
@@ -187,6 +176,13 @@ int main(void)
                     DrawRectangle(x * SCALE_FACTOR, y * SCALE_FACTOR, SCALE_FACTOR, SCALE_FACTOR, GetColor(0x9290C3FF));
             }
         }
+        DrawFPS(10, 10);
+        if (element == SAND)
+            DrawText("Sand", 340, 10, 24, GetColor(0xFDDE55FF));
+        else if (element == WATER)
+            DrawText("Water", 340, 10, 24, GetColor(0x0E46A3FF));
+        else if (element == STONE)
+            DrawText("Stone", 340, 10, 24, GetColor(0x9290C3FF));
         DrawCircleLines(GetMouseX(), GetMouseY(), circleRadius, WHITE);
         EndDrawing();
     }
